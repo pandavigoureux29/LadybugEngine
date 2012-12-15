@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.ladybug.engine.components.BoxCollider;
@@ -19,7 +20,9 @@ import com.ladybug.engine.components.Component.TYPE;
 
 public class GameObject extends Sprite {
 	public String m_name;
+	//RENDERER
 	public String m_textureName;
+	public int m_textureHeight, m_textureWidth;
 	
 	//Last position known
 	public Vector2 m_oldPos;
@@ -172,10 +175,21 @@ public class GameObject extends Sprite {
 		//do nothing if the texture name is null or blank
 		if(m_textureName == null || m_textureName == "" || !Global.assets.isLoaded(m_textureName, Texture.class) )
 			return;
+		
 		Texture texture;	
 		texture = Global.assets.get(m_textureName, Texture.class);
-		this.setTexture(texture);
-		this.setSize(texture.getWidth(), texture.getHeight());
+		
+		//if texture size = 0
+		if(m_textureHeight == 0 || m_textureWidth == 0){
+			m_textureHeight = texture.getHeight();
+			m_textureWidth = texture.getWidth();
+		}
+		
+		TextureRegion region = new TextureRegion(texture, 0, 0, m_textureWidth, m_textureHeight);
+		
+		setRegion(region);
+		
+		this.setSize(m_textureWidth, m_textureHeight);
 	}
 		
 	/**
