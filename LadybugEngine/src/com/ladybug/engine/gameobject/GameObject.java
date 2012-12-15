@@ -14,14 +14,13 @@ import com.ladybug.engine.components.BoxCollider;
 import com.ladybug.engine.components.Collider;
 import com.ladybug.engine.components.Component;
 import com.ladybug.engine.components.Rigidbody;
+import com.ladybug.engine.components.Script;
 import com.ladybug.engine.components.Component.TYPE;
 
 public class GameObject extends Sprite {
 	public String m_name;
 	public String m_textureName;
-	//Speed
-	public float m_speed = 1;
-	public float m_maxSpeed = 1;
+	
 	//Last position known
 	public Vector2 m_oldPos;
 	
@@ -39,58 +38,73 @@ public class GameObject extends Sprite {
 	
 	public GameObject(){
 		m_initialPosition = new Vector2();
+		m_name = "GameObject";
 	};
 	public GameObject(float x, float y){
 		m_initialPosition = new Vector2(x,y);
 		setPosition(x, y);
+		m_name = "GameObject";
 	};
 	
-	//-----------------------------------------
-	//				AWAKE & START
-	//-----------------------------------------
-	/**
-	 * Called by the scene right after the instanciation and before any Start
-	 */
-	public void awake(){}
-	/**
-	 * Called by the scene right after the Awake and before any update
-	 */
-	public void start(){}
-	//-----------------------------------------
-	//				UPDATES
-	//-----------------------------------------
-	
-	/**
-	 * Called before all the updates
-	 */
-	public void preUpdate(){}
-	
-	/**
-	 * Called every frame
-	 */
-	public void update(){}
-	
-	/**
-	 * Called after all the updates
-	 */
-	public void postUpdate(){}	
+	public GameObject(String name){
+		m_initialPosition = new Vector2();
+		m_name = name;
+	};
+	public GameObject(float x, float y,String name){
+		m_initialPosition = new Vector2(x,y);
+		setPosition(x, y);
+		m_name = name;
+	};
 	
 
 	//-----------------------------------------
 	//				COLLISION
 	//-----------------------------------------
 	
-	public void OnCollisionEnter(Collider collider){}
+	public void OnCollisionEnter(Collider collider){
+		//oncollisionenter
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				Component c = m_components.get(i);
+				if(c.enabled){
+					if(c.getType() == Component.TYPE.SCRIPT)
+						((Script)c).OnCollisionEnter(collider);
+				}
+			}
+		}
+	}
 	
-	public void OnCollisionStay(Collider collider){}
+	public void OnCollisionStay(Collider collider){
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				Component c = m_components.get(i);
+				if(c.enabled){
+					if(c.getType() == Component.TYPE.SCRIPT)
+						((Script)c).OnCollisionStay(collider);
+				}
+			}
+		}
+	}
 	
-	public void OnCollisionExit(Collider collider){}
+	public void OnCollisionExit(Collider collider){
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				Component c = m_components.get(i);
+				if(c.enabled){
+					if(c.getType() == Component.TYPE.SCRIPT)
+						((Script)c).OnCollisionExit(collider);
+				}
+			}
+		}
+	}
 	
 	/**
 	 * Called from a child : this resets the collider of the gameobject
 	 * to include all of its children's colliders
 	 */
 	public void updateCollider(){
+		if(m_children == null)
+			return;
 		if(collider == null)
 			addComponent(new BoxCollider());
 		Vector2 min = m_children.get(0).collider.min;
@@ -135,20 +149,6 @@ public class GameObject extends Sprite {
 	}
 	
 	/**
-	 * Loads the texture and creates the sprite with the texture size
-	 * @param Texture texture : the texture name (loaded internal)
-	 */
-
-	protected void loadSprite(){
-		//do nothing if the texture name is null or blank
-		if(m_textureName == null || m_textureName == "")
-			return;
-		Texture texture;		
-		texture = Global.assets.get(m_textureName, Texture.class);
-		this.setTexture(texture);
-		this.setSize(texture.getWidth(), texture.getHeight());
-	}
-	/**
 	 * Loads all the assets of the game objects in the AssetManager
 	 */
 	public void loadAssets(){
@@ -163,6 +163,21 @@ public class GameObject extends Sprite {
 		}
 	}
 	
+	/**
+	 * Loads the texture and creates the sprite with the texture size
+	 * @param Texture texture : the texture name (loaded internal)
+	 */
+
+	protected void loadSprite(){
+		//do nothing if the texture name is null or blank
+		if(m_textureName == null || m_textureName == "" || !Global.assets.isLoaded(m_textureName, Texture.class) )
+			return;
+		Texture texture;	
+		texture = Global.assets.get(m_textureName, Texture.class);
+		this.setTexture(texture);
+		this.setSize(texture.getWidth(), texture.getHeight());
+	}
+		
 	/**
 	 * Binds the assets to the gameObject 
 	 * WARNING: all the assets have to be previously loaded in the AssetManager
@@ -251,17 +266,6 @@ public class GameObject extends Sprite {
 		}
 	}
 	
-	/**
-	 * Update all the enabled components of the object
-	 */
-	public void updateComponents(){
-		for(int i=0; i< m_components.size();i++){
-			if(m_components.get(i).enabled)
-				m_components.get(i).update();
-		}
-	}
-	
-
 	//-----------------------------------------
 	//		     CHILDREN
 	//-----------------------------------------
@@ -296,14 +300,9 @@ public class GameObject extends Sprite {
 		//Add this as a parent
 		go.parent = this;	
 		//update collider
-		updateCollider();
+		//updateCollider();
 	}
-	
-	public void updateChildrenComponents(){
-		for(int i=0; i< m_children.size() ; i++)
-			m_children.get(i).updateComponents();
-	}
-	
+		
 	//-----------------------------------------
 	//		          RESET
 	//-----------------------------------------
@@ -342,39 +341,83 @@ public class GameObject extends Sprite {
 	//	CORE FUNCTIONS - NEVER OVERRIDE THAT
 	//----------------------------------------------
 	
+	public void coreAwake(){
+		if(m_children != null){
+			for(int i=0; i< m_children.size() ; i++)
+				m_children.get(i).coreAwake();
+		}
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				if(m_components.get(i).enabled)
+					m_components.get(i).awake();
+			}
+		}
+	}
+	
+	public void coreStart(){
+		if(m_children != null){
+			for(int i=0; i< m_children.size() ; i++)
+				m_children.get(i).coreStart();
+		}
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				if(m_components.get(i).enabled)
+					m_components.get(i).start();
+			}
+		}
+	}
+	
 	/**
 	 * Called before all the updates
 	 */
 	public void corePreUpdate(){
 		//keep old position
 		m_oldPos = getPosition();
-		preUpdate();
-		if(m_children == null)
-			return;
-		for(int i=0; i< m_children.size() ; i++)
-			m_children.get(i).preUpdate();
+
+		if(m_children != null){
+			for(int i=0; i< m_children.size() ; i++)
+				m_children.get(i).corePreUpdate();
+		}
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				if(m_components.get(i).enabled)
+					m_components.get(i).preUpdate();
+			}
+		}
 	}
 	
 	/**
 	 * Called every frame
 	 */
 	public void coreUpdate(){
-		updateComponents();
-		update();
-		if(m_children == null)
-			return;
-		for(int i=0; i< m_children.size() ; i++)
-			m_children.get(i).update();
+		
+		//update children
+		if(m_children != null){
+			for(int i=0; i< m_children.size() ; i++)
+				m_children.get(i).coreUpdate();
+		}
+		//update components
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				if(m_components.get(i).enabled)
+					m_components.get(i).update();
+			}
+		}
 	}
 	
 	/**
 	 * Called after all the updates
 	 */
 	public void corePostUpdate(){
-		postUpdate();
-		if(m_children == null)
-			return;
-		for(int i=0; i< m_children.size() ; i++)
-			m_children.get(i).postUpdate();
+		if(m_children != null){			
+			for(int i=0; i< m_children.size() ; i++)
+				m_children.get(i).corePostUpdate();
+		}
+		if(m_components != null){
+			for(int i=0;i< m_components.size(); i++){
+				if(m_components.get(i).enabled)
+					m_components.get(i).postUpdate();
+			}
+		}
 	}	
 }

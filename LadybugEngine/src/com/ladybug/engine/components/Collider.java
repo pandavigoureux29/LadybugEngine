@@ -23,13 +23,14 @@ public class Collider extends Component {
 	//colliders that are actually colliding 
 	protected ArrayList<Collider> m_currentColliders;
 	//used for exiting collisions only, these are the collider added for the current frame
-	protected ArrayList<Collider> m_checkedColliders;
+	protected ArrayList<Collider> m_frameColliders;
 	
 	public Collider(){
 		min = new Vector2();
 		max = new Vector2();
 		m_type = Component.TYPE.COLLIDER;
-		m_checkedColliders = new ArrayList<Collider>();
+		m_frameColliders = new ArrayList<Collider>();
+		m_currentColliders = new ArrayList<Collider>();
 	}
 	
 	public ArrayList<Collider> collide(Collider other){
@@ -72,32 +73,60 @@ public class Collider extends Component {
 	//-----------------------------------------
 	
 	public void addCollision(Collider other){
-		if(m_currentColliders == null)
-			m_currentColliders = new ArrayList<Collider>();
-		//if the collider is already in the list
-		if(m_currentColliders.contains(other)){
-			//send OnCollisionStay to the go
-			m_object.OnCollisionStay(other);
-		}else{
-			//add it
-			m_currentColliders.add(other);
-			//send OnCollisionEnter to the object
-			m_object.OnCollisionEnter(other);
-		}
+		//if(m_object.m_name == "Player")
+			//System.out.println("new " + other);
+		//add it as a collision for this frame
+		m_frameColliders.add(other);
+	}
+	
+	public void processCollisions(){
+		//if(m_object.m_name == "Player")
+			//System.out.println( m_frameColliders.size());
+		checkEnteringAndStillCollisions();
+		checkExitingCollisions();
+		clearBuffers();
 	}
 	
 	
-	public void checkExitingCollisions(){
-		if(m_currentColliders == null)
-			return;
-		Iterator<Collider> it = m_currentColliders.iterator();
-		while(it.hasNext()){
-			Collider c = (Collider) it.next();
-			if(! m_checkedColliders.contains(c)){
-				getObject().OnCollisionExit(c);
-				it.remove();
+	private void checkEnteringAndStillCollisions(){
+		if(m_frameColliders.size() > 0){
+			Iterator<Collider> it = m_frameColliders.iterator();
+			while(it.hasNext()){
+				Collider c = (Collider) it.next();
+				//ENTERING COLLISION
+				if( ! m_currentColliders.contains(c)){
+					m_currentColliders.add(c);
+					getObject().OnCollisionEnter(c);
+				//STAYING COLLISION
+				}else{
+					getObject().OnCollisionStay(c);
+				}
 			}
 		}
+	}
+	
+	private void checkExitingCollisions(){
+		if(m_currentColliders.size() > 0){
+			//iterator on current colliders for this object
+			Iterator<Collider> it = m_currentColliders.iterator();
+			while(it.hasNext()){
+				Collider c = (Collider) it.next();
+				//if the collider doesn't exist in the colliders for this frame
+				if(! m_frameColliders.contains(c)){
+					//if(m_object.m_name == "Player")
+						//System.out.println( "exit" + c );
+					//this is an exiting collision
+					getObject().OnCollisionExit(c);
+					it.remove();
+				}else{
+					
+				}
+			}
+		}
+	}
+		
+	private void clearBuffers(){
+		m_frameColliders.clear();
 	}
 	
 	//=====================================
@@ -128,7 +157,9 @@ public class Collider extends Component {
 		BOX , DISC
 	}
 	
-	public void set(){
+	@Override 
+	public void setObject(GameObject go){
+		super.setObject(go);
 	}
 	
 }

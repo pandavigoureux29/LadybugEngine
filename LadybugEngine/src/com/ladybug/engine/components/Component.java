@@ -10,8 +10,16 @@ public class Component {
 	public boolean enabled = true;
 	
 	public Component(){}
+	
+	public void awake(){}
+	
+	public void start(){}
+	
+	public void preUpdate(){}
 
 	public void update(){}
+	
+	public void postUpdate(){}
 	
 	//------------------------------------
 	//         GETTERS SETTERS
@@ -32,6 +40,6 @@ public class Component {
 	public void reset(){}
 	// ******* STATIC VARIABLES **********
 	public enum TYPE{
-		RIGIDBODY , COLLIDER
+		RIGIDBODY , COLLIDER , SCRIPT
 	}
 }

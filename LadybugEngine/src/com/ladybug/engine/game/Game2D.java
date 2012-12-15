@@ -57,9 +57,10 @@ public class Game2D implements ApplicationListener{
 		//take the first scene first
 		sceneCurrent = m_firstScene;
 		Global.currentScene = sceneCurrent;
+		
+		m_firstScene.init();
 		//begin loading first scene
 		m_firstScene.load();
-		m_firstScene.init();
 		
 	}
 	

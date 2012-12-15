@@ -30,17 +30,20 @@ public class CollisionManager {
 				//get colliders
 				coll1 = m_colliders.get(i);
 				coll2 = m_colliders.get(j);
+				//check nulls
+				if(coll1 == null || coll2 == null)
+					continue;
 				//if the layers can't collide, skip
 				if( ! LayerManager.collide(coll1.LAYER, coll2.LAYER))
 					continue;
 				checkCollisions(coll1, coll2);
-				checkCollisions(coll2,coll1);
 			}
 		}
-		
+		//System.out.println("========Check==========");
 		//check for exiting collisions in colliders
 		for(int i=0; i< m_colliders.size(); i++){
-			m_colliders.get(i).checkExitingCollisions();
+			if(m_colliders.get(i) != null)
+				m_colliders.get(i).processCollisions();
 		}
 	}
 	

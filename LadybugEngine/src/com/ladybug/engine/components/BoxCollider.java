@@ -1,6 +1,7 @@
 package com.ladybug.engine.components;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.ladybug.engine.gameobject.GameObject;
 
 public class BoxCollider extends Collider{
 
@@ -88,7 +89,9 @@ public class BoxCollider extends Collider{
 		m_rect = rect;
 	}
 	
-	public void set(){
+	@Override 
+	public void setObject(GameObject go){
+		super.setObject(go);
 	}
 	
 }

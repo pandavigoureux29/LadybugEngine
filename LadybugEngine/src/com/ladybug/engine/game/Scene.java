@@ -36,15 +36,15 @@ public class Scene {
 	//				INITIALISATION
 	//----------------------------------------------
 	public void init(){
-		
+				
+		for(int i=0; i< m_objects.size() ; i++){
+			m_objects.get(i).coreAwake();
+		}
+		for(int i=0; i< m_objects.size() ; i++){
+			m_objects.get(i).coreStart();
+		}
+
 		initCollisionManager();
-		
-		for(int i=0; i< m_objects.size() ; i++){
-			m_objects.get(i).awake();
-		}
-		for(int i=0; i< m_objects.size() ; i++){
-			m_objects.get(i).start();
-		}
 	}
 	
 
