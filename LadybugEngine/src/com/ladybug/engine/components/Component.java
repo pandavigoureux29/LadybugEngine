@@ -40,6 +40,6 @@ public class Component {
 	public void reset(){}
 	// ******* STATIC VARIABLES **********
 	public enum TYPE{
-		RIGIDBODY , COLLIDER , SCRIPT
+		RIGIDBODY , COLLIDER , SCRIPT, RENDERER
 	}
 }

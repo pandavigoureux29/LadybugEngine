@@ -1,5 +1,7 @@
 package com.ladybug.engine.components;
 
+import com.ladybug.engine.gameobject.Renderer;
+
 public class Script extends Component {
 	
 	public Script(){
@@ -13,6 +15,10 @@ public class Script extends Component {
 	
 	public Collider getCollider(){
 		return getObject().collider;
+	}
+	
+	public Renderer getRenderer(){
+		return getObject().renderer;
 	}
 
 	//-----------------------------------------

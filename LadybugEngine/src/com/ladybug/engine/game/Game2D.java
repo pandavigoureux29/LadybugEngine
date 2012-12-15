@@ -58,10 +58,10 @@ public class Game2D implements ApplicationListener{
 		sceneCurrent = m_firstScene;
 		Global.currentScene = sceneCurrent;
 		
-		m_firstScene.init();
+
 		//begin loading first scene
 		m_firstScene.load();
-		
+				
 	}
 	
 	protected void setLayersCollisions(){

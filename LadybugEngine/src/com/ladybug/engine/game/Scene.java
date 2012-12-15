@@ -142,7 +142,10 @@ public class Scene {
 		//while loading
 		if( loading ){
 			if(Global.assets.update()){
+				//bind the asset
 				bindAssets();
+				//execute awakes & starts
+				init();
 				loading = false;
 			}
 			return;

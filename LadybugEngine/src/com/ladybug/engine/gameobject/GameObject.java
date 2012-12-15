@@ -20,9 +20,6 @@ import com.ladybug.engine.components.Component.TYPE;
 
 public class GameObject extends Sprite {
 	public String m_name;
-	//RENDERER
-	public String m_textureName;
-	public int m_textureHeight, m_textureWidth;
 	
 	//Last position known
 	public Vector2 m_oldPos;
@@ -34,6 +31,7 @@ public class GameObject extends Sprite {
 	protected ArrayList<Component> m_components = new ArrayList<Component>();
 	public Rigidbody rigidbody;
 	public Collider collider;
+	public Renderer renderer;
 	public GameObject parent;
 	
 	//Children
@@ -58,6 +56,13 @@ public class GameObject extends Sprite {
 		setPosition(x, y);
 		m_name = name;
 	};
+	
+	public GameObject(float x, float y, String textureName, int frameWidth, int frameHeight,String name){
+		m_initialPosition = new Vector2(x,y);
+		setPosition(x, y);
+		m_name = name;
+		addComponent(new Renderer(textureName,frameWidth,frameHeight));
+	}
 	
 
 	//-----------------------------------------
@@ -157,47 +162,18 @@ public class GameObject extends Sprite {
 	public void loadAssets(){
 		//load Children assets
 		loadChildrenAssets();
-		//do nothing if the texture name is null or blank
-		if(m_textureName == null || m_textureName == "")
-			return;
-		//check if the texture is loaded
-		if(! Global.assets.containsAsset(m_textureName)){
-			Global.assets.load(m_textureName, Texture.class); //if not load it
-		}
+		if(renderer != null)
+			renderer.loadAssets();
 	}
 	
-	/**
-	 * Loads the texture and creates the sprite with the texture size
-	 * @param Texture texture : the texture name (loaded internal)
-	 */
-
-	protected void loadSprite(){
-		//do nothing if the texture name is null or blank
-		if(m_textureName == null || m_textureName == "" || !Global.assets.isLoaded(m_textureName, Texture.class) )
-			return;
-		
-		Texture texture;	
-		texture = Global.assets.get(m_textureName, Texture.class);
-		
-		//if texture size = 0
-		if(m_textureHeight == 0 || m_textureWidth == 0){
-			m_textureHeight = texture.getHeight();
-			m_textureWidth = texture.getWidth();
-		}
-		
-		TextureRegion region = new TextureRegion(texture, 0, 0, m_textureWidth, m_textureHeight);
-		
-		setRegion(region);
-		
-		this.setSize(m_textureWidth, m_textureHeight);
-	}
 		
 	/**
 	 * Binds the assets to the gameObject 
 	 * WARNING: all the assets have to be previously loaded in the AssetManager
 	 */
 	public void bindAssets(){
-		loadSprite();
+		if(renderer != null)
+			renderer.loadSprite();
 		//bind children assets
 		bindChildrenAssets();
 	}
@@ -228,19 +204,19 @@ public class GameObject extends Sprite {
 	/**
 	 * Replace the object to its old position
 	 */
-	public void replaceToOld(){
+	public void replaceToOldPosition(){
 		setPosition(m_oldPos.x, m_oldPos.y);
 	}
 	/**
 	 * Replace the object the its previous X position
 	 */
-	public void replaceToOldX(){
+	public void replaceToOldPositionX(){
 		setPosition(m_oldPos.x, getY());
 	}
 	/**
 	 * Replace the object to its previous Y position
 	 */
-	public void replaceToOldY(){
+	public void replaceToOldPositionY(){
 		setPosition(getX(), m_oldPos.y);
 	}
 	
@@ -277,6 +253,8 @@ public class GameObject extends Sprite {
 		//COLLIDER
 		}else if(type == Component.TYPE.COLLIDER){	
 			collider = (Collider) component;
+		}else if(type == Component.TYPE.RENDERER){
+			renderer = (Renderer) component;
 		}
 	}
 	
