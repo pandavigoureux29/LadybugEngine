@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
 public class Scene {
@@ -18,6 +19,8 @@ public class Scene {
 	public static int HEIGHT = 360;
 	//objects of the scene
 	ArrayList<GameObject> m_objects;
+	//stages of the scene
+	ArrayList<Stage> m_stages;
 	//Camera
 	OrthographicCamera m_mainCamera;
 	public static SpriteBatch batch;
@@ -29,7 +32,8 @@ public class Scene {
 	CollisionManager m_collisionManager;
 	
 	public Scene(){
-		m_objects = new ArrayList<GameObject>();		
+		m_objects = new ArrayList<GameObject>();
+		m_stages = new ArrayList<Stage>();
 	}
 	
 	//----------------------------------------------
@@ -131,6 +135,14 @@ public class Scene {
 	public void addObject(GameObject go){
 		m_objects.add(go);
 	}
+	
+	/**
+	 * Add a stage to the scene
+	 * @param _stage Stage to add
+	 */
+	public void addStage(Stage _stage) {
+		m_stages.add(_stage);
+	}
 
 	public void dispose() {
 		batch.dispose();
@@ -171,16 +183,27 @@ public class Scene {
 		batch.setProjectionMatrix(m_mainCamera.combined);
 		batch.begin();
 			drawObjects(batch);
-		batch.end();		
+		batch.end();
+		
+		for (int i=0; i<m_stages.size(); i++) {
+			m_stages.get(i).draw();
+		}
 	}
 	
-	public void reset(){
+	public void reset() {
 		for(int i=0; i<m_objects.size();i++)
 			m_objects.get(i).reset();
+		
+		for(int i=0; i<m_stages.size();i++)
+			m_stages.get(i).clear();
 	}
 	
-	public ArrayList<GameObject> getObjects(){
+	public ArrayList<GameObject> getObjects() {
 		return m_objects;
+	}
+	
+	public ArrayList<Stage> getStages() {
+		return m_stages;
 	}
 
 }
