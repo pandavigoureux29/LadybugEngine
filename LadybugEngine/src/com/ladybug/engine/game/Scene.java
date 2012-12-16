@@ -186,6 +186,7 @@ public class Scene {
 		batch.end();
 		
 		for (int i=0; i<m_stages.size(); i++) {
+			m_stages.get(i).act(Gdx.graphics.getDeltaTime());
 			m_stages.get(i).draw();
 		}
 	}
