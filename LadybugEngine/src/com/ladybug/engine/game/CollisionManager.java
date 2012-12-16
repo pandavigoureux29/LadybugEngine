@@ -31,7 +31,7 @@ public class CollisionManager {
 				coll1 = m_colliders.get(i);
 				coll2 = m_colliders.get(j);
 				//check nulls
-				if(coll1 == null || coll2 == null)
+				if(coll1 == null || !coll1.enabled || coll2 == null || !coll2.enabled)
 					continue;
 				//if the layers can't collide, skip
 				if( ! LayerManager.collide(coll1.LAYER, coll2.LAYER))
