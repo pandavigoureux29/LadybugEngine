@@ -25,10 +25,10 @@ public class Script extends Component {
 	//				COLLISION
 	//-----------------------------------------
 	
-	public void OnCollisionEnter(Collider collider){}
+	public void onCollisionEnter(Collider collider){}
 	
-	public void OnCollisionStay(Collider collider){}
+	public void onCollisionStay(Collider collider){}
 	
-	public void OnCollisionExit(Collider collider){}
+	public void onCollisionExit(Collider collider){}
 	
 }

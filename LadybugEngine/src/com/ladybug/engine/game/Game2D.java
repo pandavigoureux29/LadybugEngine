@@ -20,7 +20,7 @@ public class Game2D implements ApplicationListener{
 	//Scenes of the games
 	public  ArrayList<Scene> m_scenes;
 	//first scene to play
-	private Scene m_firstScene;
+	protected Scene m_firstScene;
 	//current scene
 	Scene sceneCurrent;
 
@@ -51,7 +51,7 @@ public class Game2D implements ApplicationListener{
 		
 		Global.assets = new AssetManager();
 		//this creates the array of layers for collision
-		LayerManager.Init();
+		LayerManager.init();
 		setLayersCollisions();
 	
 		//take the first scene first

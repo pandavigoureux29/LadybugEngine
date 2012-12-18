@@ -149,7 +149,18 @@ public class Scene {
 		for(int i=0;i<m_objects.size();i++)
 			m_objects.get(i).dispose();
 	}
-
+	
+	//======SCENE UPDATES===========
+	/**
+	 * Called before all other updates
+	 */
+	protected void update(){}
+	/**
+	 * Called just before the rendering of the scene
+	 */
+	protected void lateUpdate(){}
+	
+	//===========RENDERING===========
 	public void render() {
 		//while loading
 		if( loading ){
@@ -173,6 +184,8 @@ public class Scene {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
+		this.update();
+		
 		//update objects
 		updateObjects();
 		//update Collision Manager
@@ -180,6 +193,10 @@ public class Scene {
 		//update camera
 		m_mainCamera.update();
 		
+		//late update of the scene
+		lateUpdate();
+		
+		//DRAW STUFF
 		batch.setProjectionMatrix(m_mainCamera.combined);
 		batch.begin();
 			drawObjects(batch);

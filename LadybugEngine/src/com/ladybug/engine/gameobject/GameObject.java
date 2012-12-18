@@ -69,38 +69,38 @@ public class GameObject extends Sprite {
 	//				COLLISION
 	//-----------------------------------------
 	
-	public void OnCollisionEnter(Collider collider){
+	public void onCollisionEnter(Collider collider){
 		//oncollisionenter
 		if(m_components != null){
 			for(int i=0;i< m_components.size(); i++){
 				Component c = m_components.get(i);
 				if(c.enabled){
 					if(c.getType() == Component.TYPE.SCRIPT)
-						((Script)c).OnCollisionEnter(collider);
+						((Script)c).onCollisionEnter(collider);
 				}
 			}
 		}
 	}
 	
-	public void OnCollisionStay(Collider collider){
+	public void onCollisionStay(Collider collider){
 		if(m_components != null){
 			for(int i=0;i< m_components.size(); i++){
 				Component c = m_components.get(i);
 				if(c.enabled){
 					if(c.getType() == Component.TYPE.SCRIPT)
-						((Script)c).OnCollisionStay(collider);
+						((Script)c).onCollisionStay(collider);
 				}
 			}
 		}
 	}
 	
-	public void OnCollisionExit(Collider collider){
+	public void onCollisionExit(Collider collider){
 		if(m_components != null){
 			for(int i=0;i< m_components.size(); i++){
 				Component c = m_components.get(i);
 				if(c.enabled){
 					if(c.getType() == Component.TYPE.SCRIPT)
-						((Script)c).OnCollisionExit(collider);
+						((Script)c).onCollisionExit(collider);
 				}
 			}
 		}

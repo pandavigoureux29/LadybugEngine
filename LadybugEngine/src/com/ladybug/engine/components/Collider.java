@@ -96,10 +96,10 @@ public class Collider extends Component {
 				//ENTERING COLLISION
 				if( ! m_currentColliders.contains(c)){
 					m_currentColliders.add(c);
-					getObject().OnCollisionEnter(c);
+					getObject().onCollisionEnter(c);
 				//STAYING COLLISION
 				}else{
-					getObject().OnCollisionStay(c);
+					getObject().onCollisionStay(c);
 				}
 			}
 		}
@@ -116,7 +116,7 @@ public class Collider extends Component {
 					//if(m_object.m_name == "Player")
 						//System.out.println( "exit" + c );
 					//this is an exiting collision
-					getObject().OnCollisionExit(c);
+					getObject().onCollisionExit(c);
 					it.remove();
 				}else{
 					

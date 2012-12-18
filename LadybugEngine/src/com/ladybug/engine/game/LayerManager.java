@@ -9,7 +9,7 @@ public class LayerManager {
 	
 	private static boolean[][] layerTab = new boolean[nbLayers][nbLayers];
 	
-	public static void Init(){
+	public static void init(){
 		for(int i=0; i< nbLayers ; i++){
 			for(int j=0; j< nbLayers ; j++){
 				layerTab[i][j] = true;
