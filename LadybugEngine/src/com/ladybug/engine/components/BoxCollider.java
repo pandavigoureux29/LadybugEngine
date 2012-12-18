@@ -16,13 +16,18 @@ public class BoxCollider extends Collider{
 	}
 	
 	/**
-	 * Create a BoxCollider with a Rectangle set with width & height
+	 * Create a BoxCollider with a Rectangle set with width & height (offset = 0;0 by default)
 	 * @param w width
 	 * @param h height
 	 */
 	public BoxCollider(float w, float h){
 		m_rect = new Rectangle(0,0,w,h);
 		m_collType = Type.BOX;
+	}
+	
+	public BoxCollider(float x, float y, float w, float h){
+		m_rect = new Rectangle(x,y,w,h);
+		m_collType = Type.BOX;		
 	}
 	
 	public BoxCollider(Rectangle rect){
