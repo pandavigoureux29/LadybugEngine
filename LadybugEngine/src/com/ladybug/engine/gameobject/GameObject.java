@@ -329,6 +329,20 @@ public class GameObject extends Sprite {
 		GOs.add(this);
 		return GOs;
 	}
+	
+	/**
+	 * Returns the required component of the GameObject by its component name
+	 * @param name
+	 * @return
+	 */
+	public Component getComponent(String name){
+		for(int i=0; i< m_components.size(); i++){
+			String s = m_components.get(i).getComponentClassName();
+			if(s.endsWith(name))
+				return m_components.get(i);
+		}
+		return null;
+	}
 	//----------------------------------------------
 	//	CORE FUNCTIONS - NEVER OVERRIDE THAT
 	//----------------------------------------------

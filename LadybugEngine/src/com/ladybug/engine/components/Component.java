@@ -6,10 +6,15 @@ public class Component {
 	
 	protected GameObject m_object;
 	protected TYPE m_type;
+	protected String m_componentClassName = "Component";
 	
 	public boolean enabled = true;
 	
-	public Component(){}
+	public Component(){
+		String s = this.getClass().toString() ;		
+		s = s.substring(s.lastIndexOf(".")+1);
+		m_componentClassName = s;
+	}
 	
 	public void awake(){}
 	
@@ -35,6 +40,10 @@ public class Component {
 	
 	public TYPE getType(){
 		return m_type;
+	}
+	
+	public String getComponentClassName(){
+		return m_componentClassName;
 	}
 	
 	public void reset(){}
